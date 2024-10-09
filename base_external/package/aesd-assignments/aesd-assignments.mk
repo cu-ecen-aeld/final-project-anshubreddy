@@ -6,7 +6,7 @@
 ##############################################################
 
 # Referencing latest commit from assignment 3 git contents
-AESD_ASSIGNMENTS_VERSION = 'ac639f4b8c7954d581f9f7ad7acb63fd52e72779'
+AESD_ASSIGNMENTS_VERSION = 'e92ed9d325cc0cc753542ef13b92d6a7a34f8dde'
 
 # Referencing *ssh* repository URL here to work properly
 # with ssh keys and the automated build/test system.
