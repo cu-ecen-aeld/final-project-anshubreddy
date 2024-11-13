@@ -152,15 +152,14 @@ unload_module()
 # Main logic
 case $1 in
     start)
-        load_scull
-        load_module faulty
-        modprobe hello
+        load_scull || exit 1
+        load_module faulty || exit 1
+        modprobe hello || exit 1
         ;;
     stop)
-        unload_scull
-        unload_module faulty
-        rmmod hello
-        rm -f /dev/hello
+        unload_scull || exit 1
+        unload_module faulty || exit 1
+        rmmod hello || exit 1
         ;;
     *)
         echo "Usage: $0 {start|stop}"
