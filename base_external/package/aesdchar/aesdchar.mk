@@ -6,7 +6,7 @@
 ##############################################################
 
 # Referencing latest commit from assignment 3 git contents
-AESDCHAR_VERSION = 'd16b64277f1871f19bde7e0a8fc107f959485706'
+AESDCHAR_VERSION = 'd81964955a84f8b3b41fe899843c83d68199b26e'
 
 # Referencing *ssh* repository URL here to work properly
 # with ssh keys and the automated build/test system.
