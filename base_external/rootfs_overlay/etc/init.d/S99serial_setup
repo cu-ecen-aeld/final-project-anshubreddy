@@ -1,0 +1,13 @@
+#!/bin/sh
+# Init script to load CP210x driver and configure serial port
+
+echo "Loading CP210x driver and configuring serial port"
+
+# Load CP210x driver
+modprobe cp210x
+
+# Add the device to the driver
+echo "10c4 ea60" > /sys/bus/usb-serial/drivers/cp210x/new_id
+
+# Set permissions for the serial port
+chmod 666 /dev/ttyUSB0
