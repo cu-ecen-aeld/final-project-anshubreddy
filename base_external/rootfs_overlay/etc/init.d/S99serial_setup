@@ -1,13 +1,45 @@
 #!/bin/sh
 # Init script to load CP210x driver and configure serial port
 
-echo "Loading CP210x driver and configuring serial port"
+echo "Starting CP210x setup" > /dev/kmsg
 
-# Load CP210x driver
-modprobe cp210x
+# Check if cp210x is already loaded
+if lsmod | grep -q cp210x; then
+    echo "cp210x already loaded" > /dev/kmsg
+else
+    echo "Loading cp210x module" > /dev/kmsg
+    modprobe cp210x || echo "Failed to load cp210x: $?" > /dev/kmsg
+fi
 
-# Add the device to the driver
-echo "10c4 ea60" > /sys/bus/usb-serial/drivers/cp210x/new_id
+# Check if the sysfs path exists
+if [ -e /sys/bus/usb-serial/drivers/cp210x/new_id ]; then
+    echo "cp210x sysfs path available" > /dev/kmsg
+else
+    echo "cp210x sysfs path /sys/bus/usb-serial/drivers/cp210x/new_id not found" > /dev/kmsg
+fi
 
-# Set permissions for the serial port
-chmod 666 /dev/ttyUSB0
+# Wait for USB device to be detected (timeout after 20 seconds)
+i=0
+while [ $i -lt 20 ]; do
+    if lsusb | grep -q "10c4:ea60"; then
+        echo "CP210x device detected" > /dev/kmsg
+        break
+    fi
+    sleep 1
+    i=$((i + 1))
+done
+
+# Add the device to the driver if the path exists
+if [ -e /sys/bus/usb-serial/drivers/cp210x/new_id ]; then
+    echo "10c4 ea60" > /sys/bus/usb-serial/drivers/cp210x/new_id || echo "Failed to register device ID 10c4:ea60" > /dev/kmsg
+else
+    echo "Skipping device ID registration: sysfs path unavailable" > /dev/kmsg
+fi
+
+# Set permissions if the device appears
+if [ -e /dev/ttyUSB0 ]; then
+    chmod 666 /dev/ttyUSB0
+    echo "Set permissions on /dev/ttyUSB0" > /dev/kmsg
+else
+    echo "/dev/ttyUSB0 not found after setup" > /dev/kmsg
+fi
